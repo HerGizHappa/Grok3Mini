@@ -5,6 +5,12 @@ import os
 
 client = Client(api_key=os.getenv("XAI_API_KEY"))
 
+# Erstellung Chat-Objekt (global für Multi-Turn)
+chat = client.chat.create(model="grok-3-mini")  
+
+# Optional: Füge eine System-Prompt hinzu
+chat.append(system("Du bist Grok, ein hilfreicher Assistent von xAI."))
+
 def askGrok():
     prompt = prompt_input.value.strip()
     if not prompt:
@@ -12,11 +18,6 @@ def askGrok():
         return #Verhinderung unnötiger API Anfrage bei leerem Prompt
 
     try:
-        # Erstellung neues Chat-Objekt (für jeden Call, um History zu resetten; oder global für Multi-Turn)
-        chat = client.chat.create(model="grok-3-mini")  
-
-        # Optional: Füge eine System-Prompt hinzu
-        chat.append(system("Du bist Grok, ein hilfreicher Assistent von xAI."))
 
         # User Prompt
         chat.append(user(prompt))
@@ -42,4 +43,5 @@ ui.button('Frage Grok', on_click=askGrok)
 output_label = ui.textarea(placeholder='Grok-Antwort erscheint hier...')
 
 ui.run(port=8081)
+
 
